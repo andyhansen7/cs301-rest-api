@@ -88,3 +88,20 @@ def show_company_search(company_name):
   else:
     return jsonify(docs[0])
 
+# List Companies By Year Founded
+@app.route('/list_companies_by_year/<founded_year>')
+def list_companies_by_year_founded(founded_year):
+  # Search for companies founded in the provided year
+  docs = []
+  for d in collection.find({'founded_year': int(founded_year)}):
+    docs.append(d)
+
+  # Sanity checks
+  if int(founded_year) < 1000 or int(founded_year) > 9999:
+    return str(founded_year) + ' is not a 4-digit number'
+  elif len(docs) < 1:
+    return 'No Companies Founded In The Year ' +  str(founded_year)
+  else:
+    return jsonify(docs)
+
+  
