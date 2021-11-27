@@ -104,4 +104,17 @@ def list_companies_by_year_founded(founded_year):
   else:
     return jsonify(docs)
 
-  
+# Count Companies By Year Founded
+@app.route('/count_companies_by_year/<founded_year>')
+def count_companies_by_year_founded(founded_year):
+  # Count companies founded in the provided year
+  count = collection.find({'founded_year': int(founded_year)}).count()
+
+  # Sanity checks
+  if int(founded_year) < 1000 or int(founded_year) > 9999:
+    return str(founded_year) + ' is not a 4-digit number'
+  elif count < 1:
+    return 'No Companies Founded In The Year ' +  str(founded_year)
+  else:
+    return str(count)
+
