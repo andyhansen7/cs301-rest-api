@@ -23,17 +23,7 @@ app.json_encoder = MyEncoder
 
 @app.route('/')
 def index():
-  return 'Server Works!'
-
-@app.route('/greet')
-def say_hello():
-  return 'Hello from Server'
-
-#adding variables
-@app.route('/user/<username>')
-def show_user(username):
-  #returns the username
-  return 'Username: %s' % username
+  return 'REST API Implementation - Andy Hansen'
 
 # Homework Query Responses
 @app.route('/HW<question_number>')
@@ -81,3 +71,20 @@ def show_homework_query_response(question_number):
     return jsonify(res[0])
   else:
     return 'Invalid homework problem provided: ' + question_number
+
+# Company Search Method
+@app.route('/company/<company_name>')
+def show_company_search(company_name):
+  # Search for company
+  docs = []
+  for d in collection.find({ 'name': str(company_name) }):
+    docs.append(d)
+
+  # Sanity checks
+  if len(docs) < 1:
+    return 'No Company Found'
+  elif len(docs) > 1:
+    return 'Multiple companies found, something is very wrong'
+  else:
+    return jsonify(docs[0])
+
