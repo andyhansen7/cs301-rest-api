@@ -1,6 +1,6 @@
 
 # Imports
-from flask import Flask, jsonify
+from flask import Flask, jsonify, redirect
 from pymongo import MongoClient
 from bson.json_util import ObjectId
 import json
@@ -83,10 +83,8 @@ def show_company_search(company_name):
   # Sanity checks
   if len(docs) < 1:
     return 'No Company Found'
-  elif len(docs) > 1:
-    return 'Multiple companies found, something is very wrong'
   else:
-    return jsonify(docs[0])
+    return jsonify(docs)
 
 # List Companies By Year Founded
 @app.route('/list_companies_by_year/<founded_year>')
@@ -118,3 +116,17 @@ def count_companies_by_year_founded(founded_year):
   else:
     return str(count)
 
+# Redirect To Crunchbase
+@app.route('/crunchbase/redirect/<company_name>')
+def redirect_to_crunchbase(company_name):
+  # Search for company
+  docs = []
+  for d in collection.find({ 'name': str(company_name) }):
+    docs.append(d)
+
+  # Sanity checks
+  if len(docs) < 1:
+    return 'No Company Found'
+  else:
+    url = str(docs[0]['crunchbase_url'])
+    return redirect(url)
