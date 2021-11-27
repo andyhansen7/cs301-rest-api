@@ -70,10 +70,14 @@ def show_homework_query_response(question_number):
       docs.append(doc)
     return jsonify(docs)
   elif question_number == '10':
-    return '10'
+    docs = []
+    for doc in collection.find({'founded_year': 1800, 'products.name': { '$exists': True } }, { 'name': 1, 'homepage_url': 1, 'number_of_employees': 1, 'products.name': 1, '_id': 0 }):
+      docs.append(doc)
+    return jsonify(docs)
   elif question_number == '12':
-    return '12'
+    return str(collection.find({'screenshots.attribution': None }).count())
   elif question_number == '13':
-    return '13'
+    res = collection.find(None, {'number_of_employees': 1, '_id': 0}).sort([('number_of_employees', -1)])
+    return jsonify(res[0])
   else:
     return 'Invalid homework problem provided: ' + question_number
